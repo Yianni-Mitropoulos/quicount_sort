@@ -139,9 +139,12 @@ void test_algos(uint64_t* jumbled_arr, uint64_t len) {
 
 int main() {
 
+    // Use time as a pseudorandom seed
+    srand(time(NULL));
+
     /* First Test */ {
         printf("Fully jumbled list\n");
-        uint64_t len = 10000000;
+        uint64_t len = 50000;
         uint64_t* jumbled_arr = generate_random_list(len);
         test_algos(jumbled_arr, len);
         free(jumbled_arr);
@@ -149,7 +152,7 @@ int main() {
 
     /* Second Test */ {
         printf("Partially jumbled list\n");
-        uint64_t len = 10000000;
+        uint64_t len = 50000;
         uint64_t* jumbled_arr = generate_somewhat_sorted_list(len, 3);
         test_algos(jumbled_arr, len);
         free(jumbled_arr);
