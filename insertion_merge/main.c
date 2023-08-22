@@ -129,8 +129,8 @@ void test_algos(uint64_t* jumbled_arr, uint64_t len) {
     }
 
     // Try some other sorts
-    measure_time("dual_pivot_quicksort", dual_pivot_quicksort, jumbled_arr, sorted_arr, len);
     measure_time("insertion_merge", insertion_merge, jumbled_arr, sorted_arr, len);
+    measure_time("dual_pivot_quicksort", dual_pivot_quicksort, jumbled_arr, sorted_arr, len);
 
     // Free memory and exit
     free(sorted_arr);
@@ -147,7 +147,7 @@ int main() {
         free(jumbled_arr);
     }
 
-    /* First Test */ {
+    /* Second Test */ {
         printf("Partially jumbled list\n");
         uint64_t len = 10000000;
         uint64_t* jumbled_arr = generate_somewhat_sorted_list(len, 3);

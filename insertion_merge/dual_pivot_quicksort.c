@@ -6,14 +6,15 @@
 #define SWAP(a, b) { uint64_t temp = (a); (a) = (b); (b) = temp; }
 
 // Partition the array using two pivot elements
-void dualPivotPartition(uint64_t arr[], int low, int high, int* pivot1, int* pivot2) {
+void dualPivotPartition(uint64_t arr[], uint64_t low, uint64_t high, uint64_t* pivot1, uint64_t* pivot2) {
+
     // Ensure the lower pivot is smaller than the higher pivot
     if (arr[low] > arr[high]) {
         SWAP(arr[low], arr[high]);
     }
 
-    int j = low + 1;
-    int g = high - 1, k = low + 1;
+    uint64_t j = low + 1;
+    uint64_t g = high - 1, k = low + 1;
     uint64_t p = arr[low], q = arr[high];
 
     while (k <= g) {
@@ -42,9 +43,9 @@ void dualPivotPartition(uint64_t arr[], int low, int high, int* pivot1, int* piv
     *pivot2 = g;
 }
 
-void dualPivotQuickSort(uint64_t arr[], int low, int high) {
-    if (low < high) {
-        int pivot1, pivot2;
+void dualPivotQuickSort(uint64_t arr[], uint64_t low, uint64_t high) {
+    if (low < high && high != UINT64_MAX) {
+        uint64_t pivot1, pivot2;
         dualPivotPartition(arr, low, high, &pivot1, &pivot2);
 
         dualPivotQuickSort(arr, low, pivot1 - 1);

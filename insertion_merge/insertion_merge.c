@@ -151,7 +151,7 @@ void insertion_merge(uint64_t* L, uint64_t len) {
 
     // Reset the size of the buffer_ptr_array
     buffer_ptr_array_size = 0;
-
+    
     // Initialize variables
     uint64_t sorted_portion_len = 1;
         
@@ -211,6 +211,7 @@ void insertion_merge(uint64_t* L, uint64_t len) {
     for (; j<buffer_ptr_array_size; j++) {
         curr_buffer = buffer_ptr_array[j];
         if (curr_buffer != NULL) {
+            buffer_ptr_array[j] = NULL;
             curr_buffer_len = curr_buffer[0];
             j++;
             break;
@@ -221,6 +222,7 @@ void insertion_merge(uint64_t* L, uint64_t len) {
         if (next_buffer == NULL) {
             continue;
         }
+        buffer_ptr_array[j] = NULL;
         next_buffer_len = next_buffer[0];
         uint64_t* new_buffer = merge(curr_buffer + 1, curr_buffer_len, next_buffer + 1, next_buffer_len);
         free(curr_buffer);
