@@ -6,7 +6,7 @@
 #include <time.h>
 
 #define MAX_LOG_SIZE 64
-#define MAX_SWAPS 35
+#define MAX_SWAPS 30
 
 uint64_t* buffer_ptr_array[MAX_LOG_SIZE] = {0};
 uint64_t  buffer_ptr_array_size = 0;

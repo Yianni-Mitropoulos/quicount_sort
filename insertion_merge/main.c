@@ -6,7 +6,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <time.h>
-#include "insertion_merge.h"
+#include "sorting_algorithms.h"
 
 // Comparator function for qsort
 int compare_uint64_t(const void* a, const void* b) {
@@ -69,52 +69,93 @@ uint64_t* generate_somewhat_sorted_list(uint64_t length, uint64_t max_swap_gap) 
     return list;
 }
 
-int main() {
-    uint64_t len = 10000000;  // 1 million items
-    // uint64_t* arr1 = generate_random_list(len);
-    uint64_t* arr1 = generate_somewhat_sorted_list(len, 2);
-    uint64_t* arr2 = malloc(sizeof(uint64_t) * len);
+void measure_time(char* fname, void (*fptr)(uint64_t*, uint64_t), uint64_t* jumbled_arr, uint64_t* sorted_arr, uint64_t len) {
 
-    // Copy the random list to arr2
-    memcpy(arr2, arr1, sizeof(uint64_t) * len);
+    // Copy the jumbled array
+    uint64_t* arr = malloc(sizeof(uint64_t) * len);
+    memcpy(arr, jumbled_arr, sizeof(uint64_t) * len);
 
-    // Timing measurement variables
+    // Declare timing measurement variables
     clock_t start, end;
-    double insertion_merge_time, qsort_time;
+    double duration;
 
-    // Apply insertion_merge and measure time
+    // Apply algorithm and and measure time
     start = clock();
-    insertion_merge(arr1, len);
+    fptr(arr, len);
     end = clock();
-    insertion_merge_time = ((double) (end - start)) / CLOCKS_PER_SEC;
-
-    // Apply qsort and measure time
-    start = clock();
-    qsort(arr2, len, sizeof(uint64_t), compare_uint64_t);
-    end = clock();
-    qsort_time = ((double) (end - start)) / CLOCKS_PER_SEC;
+    duration = ((double) (end - start)) / CLOCKS_PER_SEC;
 
     // Validate results
     int sorted_correctly = 1;
     for (uint64_t i = 0; i < len; i++) {
-        if (arr1[i] != arr2[i]) {
+        if (arr[i] != sorted_arr[i]) {
             sorted_correctly = 0;
             break;
         }
     }
 
-    if (sorted_correctly) {
-        printf("Both algorithms produced the same sorted output.\n");
-    } else {
-        printf("The sorted outputs differ.\n");
+    // Print results
+    printf("%25s time: %f seconds\n", fname, duration);
+    if (!sorted_correctly) {
+        printf("WARNING: %s does not agree with qsort.\n", fname);
     }
 
-    printf("Insertion Merge Time: %f seconds\n", insertion_merge_time);
-    printf("qsort Time: %f seconds\n", qsort_time);
+}
 
-    // Clean up
-    free(arr1);
-    free(arr2);
+void test_algos(uint64_t* jumbled_arr, uint64_t len) {
 
+    uint64_t* sorted_arr;
+    {
+        // Copy the jumbled array
+        uint64_t* arr = malloc(sizeof(uint64_t) * len);
+        memcpy(arr, jumbled_arr, sizeof(uint64_t) * len);
+
+        // Declare timing measurement variables
+        clock_t start, end;
+        double duration;
+
+        // Apply qsort and measure time
+        start = clock();
+        qsort(arr, len, sizeof(uint64_t), compare_uint64_t);
+        end = clock();
+        duration = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+        // Print qsort time
+        printf("%25s time: %f seconds\n", "qsort", duration);
+
+        // Use the result of qsort as our sorted array
+        sorted_arr = arr;
+
+    }
+
+    // Try some other sorts
+    measure_time("dual_pivot_quicksort", dual_pivot_quicksort, jumbled_arr, sorted_arr, len);
+    measure_time("insertion_merge", insertion_merge, jumbled_arr, sorted_arr, len);
+
+    // Free memory and exit
+    free(sorted_arr);
+
+}
+
+int main() {
+
+    /* First Test */ {
+        printf("Fully jumbled list\n");
+        uint64_t len = 10000000;
+        uint64_t* jumbled_arr = generate_random_list(len);
+        test_algos(jumbled_arr, len);
+        free(jumbled_arr);
+    }
+
+    /* First Test */ {
+        printf("Partially jumbled list\n");
+        uint64_t len = 10000000;
+        uint64_t* jumbled_arr = generate_somewhat_sorted_list(len, 3);
+        test_algos(jumbled_arr, len);
+        free(jumbled_arr);
+    }
+
+    // Exit
     return 0;
+
 }
