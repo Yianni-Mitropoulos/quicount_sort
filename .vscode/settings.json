@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "stdint.h": "c",
+        "insertion_merge.h": "c"
+    }
+}
