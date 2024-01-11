@@ -4,6 +4,8 @@
 #include <time.h>
 #include <string.h>
 
+#define HEAPSORT_THRESHOLD 256
+
 void swap(int64_t *a, int64_t *b) {
     int64_t temp = *a;
     *a = *b;
@@ -12,7 +14,7 @@ void swap(int64_t *a, int64_t *b) {
 
 void heapify(int64_t *arr, int n, int i) {
     int largest = i;
-    int left = 2 * i + 1;
+    int left  = 2 * i + 1;
     int right = 2 * i + 2;
 
     if (left < n && arr[left] > arr[largest])
@@ -28,9 +30,9 @@ void heapify(int64_t *arr, int n, int i) {
 }
 
 void heapsort(int64_t *arr, int n) {
-    for (int i = n / 2 - 1; i >= 0; i--)
+    for (int i = n / 2 - 1; i >= 0; i--) {
         heapify(arr, n, i);
-
+    }
     for (int i = n - 1; i > 0; i--) {
         swap(&arr[0], &arr[i]);
         heapify(arr, i, 0);
@@ -42,8 +44,9 @@ int compare_int64(const void *a, const void *b) {
 }
 
 void fill_random(int64_t *arr, int n) {
-    for (int i = 0; i < n; i++)
-        arr[i] = rand(); // Fill the array with random 64-bit integers
+    for (int i = 0; i < n; i++) {
+        arr[i] = rand();
+    }
 }
 
 int partition(int64_t *arr, int low, int high) {
@@ -64,7 +67,7 @@ int partition(int64_t *arr, int low, int high) {
 
 void quickheapsort(int64_t *arr, int low, int high) {
     if (low < high) {
-        if (high - low <= 256/*65536/4096*/) {
+        if (high - low <= HEAPSORT_THRESHOLD) {
             heapsort(arr + low, high - low + 1);
         } else {
             int pi = partition(arr, low, high);
